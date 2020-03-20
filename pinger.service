@@ -1,0 +1,19 @@
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Gravwell Pinger Service
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/pinger/pinger -clear-conns=gravwellserver -tag-name=uptime -timeout=0 -ping-timeout 5000ms host.to.monitor.com
+WorkingDirectory=/opt/pinger
+Restart=always
+User=nobody
+Group=nogroup
+StandardOutput=null
+StandardError=journal
+TimeoutStopSec=5
+KillMode=process
+KillSignal=SIGINT
