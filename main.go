@@ -122,7 +122,7 @@ func run(p *fastping.Pinger, rt *resptracker, interval time.Duration, igst *inge
 				msg = fmt.Sprintf("%v\tICMP\t%v\t%v\tTIMEOUT", tss, host, ip)
 			} else {
 				ms := float64(dur.Microseconds()) / 1000.0
-				msg = fmt.Sprintf("%v\tICMP\t%v\t%v\t%f\n", tss, host, ip, ms)
+				msg = fmt.Sprintf("%v\tICMP\t%v\t%v\t%f", tss, host, ip, ms)
 			}
 			ent := &entry.Entry{
 				TS:   entry.FromStandard(ts),
