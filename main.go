@@ -10,11 +10,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gravwell/ingest/v3"
-	"github.com/gravwell/ingest/v3/entry"
-	"github.com/gravwell/ingesters/v3/args"
-	"github.com/gravwell/ingesters/v3/version"
+	"github.com/google/uuid"
+	"github.com/gravwell/gravwell/v3/ingest"
+	"github.com/gravwell/gravwell/v3/ingest/entry"
+	"github.com/gravwell/gravwell/v3/ingesters/args"
+	"github.com/gravwell/gravwell/v3/ingesters/version"
 	"github.com/tatsushid/go-fastping"
+)
+
+const (
+	ingesterName = `pinger`
 )
 
 var (
@@ -52,11 +57,22 @@ func main() {
 		log.Fatalf("At least one endpoint is required\n")
 	}
 
-	//fire up a uniform muxer
-	igst, err := ingest.NewUniformIngestMuxer(a.Conns, a.Tags, a.IngestSecret, a.TLSPublicKey, a.TLSPrivateKey, "")
-	if err != nil {
-		log.Fatalf("Failed to create new ingest muxer: %v\n", err)
+	igCfg := ingest.UniformMuxerConfig{
+		Destinations:    a.Conns,
+		Tags:            a.Tags,
+		Auth:            a.IngestSecret,
+		IngesterName:    ingesterName,
+		IngesterVersion: version.GetVersion(),
+		IngesterUUID:    uuid.New().String(),
+		IngesterLabel:   `Gravwell ICMP Checker`,
 	}
+	igst, err := ingest.NewUniformMuxer(igCfg)
+	if err != nil {
+		log.Fatal("failed build our ingest system", err)
+		return
+	}
+
+	//fire up a uniform muxer
 	if err := igst.Start(); err != nil {
 		log.Fatalf("Failed to start ingest muxer: %v\n", err)
 	}
