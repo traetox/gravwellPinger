@@ -27,7 +27,8 @@ type cfgType struct {
 
 type httpCfg struct {
 	baseCfg
-	Http_Follow_Redirects bool
+	Follow_Redirects bool
+	Allow_Bad_TLS    bool
 }
 
 type baseCfg struct {

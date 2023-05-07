@@ -45,25 +45,24 @@ func main() {
 	if err := igst.WaitForHot(time.Second); err != nil {
 		ib.Logger.FatalCode(0, "Failed to wait for hot connection", log.KVErr(err))
 	}
-	icmpTag, err := igst.GetTag(cfg.ICMP.tag())
+	icmpTag, err := igst.NegotiateTag(cfg.ICMP.tag())
 	if err != nil {
 		ib.Logger.FatalCode(0, "Failed to resolve ICMP tag", log.KV("tag", cfg.ICMP.tag()), log.KVErr(err))
 	}
 
-	httpTag, err := igst.GetTag(cfg.HTTP.tag())
+	httpTag, err := igst.NegotiateTag(cfg.HTTP.tag())
 	if err != nil {
 		ib.Logger.FatalCode(0, "Failed to resolve HTTP tag", log.KV("tag", cfg.HTTP.tag()), log.KVErr(err))
 	}
 
 	ctx, cf := context.WithCancel(context.Background())
-	p, err := startPinger(ctx, igst, icmpTag, cfg.ICMP.timeout(), cfg.ICMP.interval(), cfg.ICMP.Target)
+	p, err := startPinger(ctx, igst, icmpTag, cfg.ICMP.interval(), cfg.ICMP.timeout(), cfg.ICMP.Target)
 	if err != nil {
 		ib.Logger.FatalCode(0, "Failed to start pinging routine", log.KVErr(err))
-	} else if err = startHttp(ctx, igst, httpTag, cfg.HTTP.timeout(), cfg.HTTP.interval(), cfg.HTTP.Target); err != nil {
+	} else if err = startHttp(ctx, igst, httpTag, cfg.HTTP.interval(), cfg.HTTP.timeout(), cfg.HTTP.Target, cfg.HTTP.Allow_Bad_TLS, cfg.HTTP.Follow_Redirects); err != nil {
 		ib.Logger.FatalCode(0, "Failed to start http test routine", log.KVErr(err))
 	}
 	utils.WaitForQuit()
-	fmt.Println("%v Exiting", time.Now())
 	p.Stop()
 	cf()
 

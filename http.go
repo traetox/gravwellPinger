@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -16,9 +17,11 @@ import (
 const (
 	defaultHttpTimeout  = 5 * time.Second
 	defaultHttpInterval = time.Minute
+
+	userAgent = `GravwellPinger/github.com/traetox/gravwellPinger`
 )
 
-func startHttp(ctx context.Context, igst *ingest.IngestMuxer, tag entry.EntryTag, interval, timeout time.Duration, urls []string) (err error) {
+func startHttp(ctx context.Context, igst *ingest.IngestMuxer, tag entry.EntryTag, interval, timeout time.Duration, urls []string, ignoreTLSErrors, followRedirects bool) (err error) {
 	if timeout <= 0 {
 		timeout = defaultHttpTimeout
 	}
@@ -30,14 +33,14 @@ func startHttp(ctx context.Context, igst *ingest.IngestMuxer, tag entry.EntryTag
 		if uri, err = url.Parse(v); err != nil {
 			return fmt.Errorf("Invalid URL %q - %w", v, err)
 		} else {
-			go httpRequestRoutine(ctx, igst, tag, interval, timeout, uri)
+			go httpRequestRoutine(ctx, igst, tag, interval, timeout, uri, ignoreTLSErrors, followRedirects)
 		}
 	}
 
 	return
 }
 
-func httpRequestRoutine(pctx context.Context, igst *ingest.IngestMuxer, tag entry.EntryTag, interval, timeout time.Duration, uri *url.URL) {
+func httpRequestRoutine(pctx context.Context, igst *ingest.IngestMuxer, tag entry.EntryTag, interval, timeout time.Duration, uri *url.URL, ignoreTLSErrors, followRedirects bool) {
 	for {
 		select {
 		case <-pctx.Done():
@@ -47,7 +50,7 @@ func httpRequestRoutine(pctx context.Context, igst *ingest.IngestMuxer, tag entr
 		var msg string
 		now := time.Now()
 		ctx, cf := context.WithTimeout(pctx, timeout)
-		if headers, body, code, err := doRequest(ctx, uri); err != nil {
+		if headers, body, code, err := doRequest(ctx, uri, ignoreTLSErrors, followRedirects); err != nil {
 			//report error
 			msg = fmt.Sprintf("%v\tERROR\t%v\t%v", now.UTC().Format(time.RFC3339), uri.String(), err)
 		} else {
@@ -59,26 +62,37 @@ func httpRequestRoutine(pctx context.Context, igst *ingest.IngestMuxer, tag entr
 				stringDur(headers),
 				stringDur(body),
 			)
-			igst.WriteEntry(&entry.Entry{
-				TS:   entry.FromStandard(now),
-				Tag:  tag,
-				Data: []byte(msg),
-			})
 		}
+		igst.WriteEntry(&entry.Entry{
+			TS:   entry.FromStandard(now),
+			Tag:  tag,
+			Data: []byte(msg),
+		})
 		cf()
 		sleepContext(pctx, interval-time.Since(now))
 	}
 }
 
-func doRequest(ctx context.Context, uri *url.URL) (hdur, bdur time.Duration, code int, err error) {
+func doRequest(ctx context.Context, uri *url.URL, ignoreTLSErrors, followRedirects bool) (hdur, bdur time.Duration, code int, err error) {
 	var resp *http.Response
 	req := http.Request{
 		Method: http.MethodGet,
 		URL:    uri,
 		Cancel: ctx.Done(),
+		Header: map[string][]string{`User-Agent`: []string{userAgent}},
+	}
+
+	cli := http.Client{}
+	if ignoreTLSErrors {
+		cli.Transport = &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+	}
+	if followRedirects == false {
+		cli.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		}
 	}
 	ts := time.Now()
-	if resp, err = http.DefaultClient.Do(&req); err != nil {
+	if resp, err = cli.Do(&req); err != nil {
 		return
 	}
 	hdur = time.Since(ts)

@@ -14,9 +14,9 @@
 		"Minor": 0,
 		"Point": 0
 	},
-	"Icon": "fa94b02a-7f1a-4fe9-af2a-796ae254c2d4",
+	"Icon": "",
 	"Banner": "",
-	"Cover": "071fe367-49b9-4d27-8044-61d4a6591df6",
+	"Cover": "",
 	"Items": [
 		{
 			"Name": "df11e387-db4c-4346-9b9f-5adeef6ee72d",
@@ -32,16 +32,39 @@
 			"Name": "071fe367-49b9-4d27-8044-61d4a6591df6",
 			"Type": 7,
 			"Hash": "51cf55caec47ceae4fd17d73348066853d433619634abc7143bcfc6ecfa91d68"
+		},
+		{
+			"Name": "pinger-icmp",
+			"Type": 4,
+			"Hash": "bdd2dab90ca05b3d3ad0228dac6a2741368460b500e455ffffa3e41848632f36"
+		},
+		{
+			"Name": "pinger-http",
+			"Type": 4,
+			"Hash": "81a7e9aa57abf06ba5c69fce7e4451dfcf9efbbcdd5d18008eddf3109468c8be"
 		}
 	],
-	"Dependencies": null,
+	"Dependencies": [
+		{
+			"ID": "io.gravwell.networkenrichment",
+			"MinVersion": 6
+		}
+	],
 	"ConfigMacros": [
 		{
-			"MacroName": "",
-			"Description": "Basic configuration macro for ICMP pinger values",
+			"MacroName": "PINGER_ICMP",
+			"Description": "The tag(s) with ICMP pinger values",
 			"DefaultValue": "pinger-icmp",
 			"Value": "",
-			"Type": "STRING",
+			"Type": "TAG",
+			"InstalledByID": ""
+		},
+		{
+			"MacroName": "PINGER_HTTP",
+			"Description": "The tag(s) with HTTP pinger values",
+			"DefaultValue": "pinger-http",
+			"Value": "",
+			"Type": "TAG",
 			"InstalledByID": ""
 		}
 	]

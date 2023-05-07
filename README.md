@@ -19,11 +19,13 @@ A basic build and installation procedure is as follows:
 ```
 CGO_ENABLED=0 go build
 
-sudo mkdir -p /opt/pinger
+sudo mkdir -p /opt/pinger/pinger.conf.d
 sudo chown nobody:nogroup /opt/pinger
+sudo chown nobody:nogroup /opt/pinger/pinger.conf.d
 
 sudo cp pinger /opt/pinger/pinger
 sudo chown nobody:nogroup /opt/pinger/pinger
+setcap cap_net_raw+ep /opt/pinger/pinger
 
 sudo cp pinger.conf /opt/pinger/
 sudo chown nobody:nogroup /opt/pinger/pinger.conf

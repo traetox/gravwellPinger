@@ -1,0 +1,12 @@
+{
+	"Name": "pinger HTTP",
+	"Desc": "Field extraction for Gravwell Pinger HTTP tag",
+	"Module": "fields",
+	"Tag": "pinger-http",
+	"Labels": null,
+	"UID": 1,
+	"GIDs": null,
+	"Global": false,
+	"UUID": "8c6ff3c6-ed07-4c84-aaba-9f57f5ed464f",
+	"LastUpdated": "2023-05-07T20:26:42.293217871Z"
+}

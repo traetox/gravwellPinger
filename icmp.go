@@ -13,6 +13,7 @@ import (
 )
 
 func startPinger(ctx context.Context, igst *ingest.IngestMuxer, tag entry.EntryTag, interval, timeout time.Duration, hosts []string) (*fastping.Pinger, error) {
+
 	p := fastping.NewPinger()
 	p.MaxRTT = timeout
 	rt := newResptracker()
