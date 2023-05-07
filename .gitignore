@@ -13,5 +13,11 @@
 
 pinger
 
+# vim swap files
+*.swp
+
+#completed kit file
+*.kit
+
 # Dependency directories (remove the comment below to include it)
 # vendor/

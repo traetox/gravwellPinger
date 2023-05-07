@@ -1,0 +1,48 @@
+{
+	"ID": "net.traetox.gravwell.pinger",
+	"Name": "pinger",
+	"Desc": "ICMP and HTTP Latency kit for gravwellPinger\n\nhttps://github.com/traetox/gravwellPinger",
+	"Readme": "# Gravwell Pinger Kit\n\nBasic kit that shows some visualizations for the Gravwell Pinger tool.\n\nFull source available at https://github.com/traetox/gravwellPinger",
+	"Version": 1,
+	"MinVersion": {
+		"Major": 5,
+		"Minor": 0,
+		"Point": 0
+	},
+	"MaxVersion": {
+		"Major": 0,
+		"Minor": 0,
+		"Point": 0
+	},
+	"Icon": "fa94b02a-7f1a-4fe9-af2a-796ae254c2d4",
+	"Banner": "",
+	"Cover": "071fe367-49b9-4d27-8044-61d4a6591df6",
+	"Items": [
+		{
+			"Name": "df11e387-db4c-4346-9b9f-5adeef6ee72d",
+			"Type": 3,
+			"Hash": "e1204977192018b5930b62eaeb54ceeae13237c5a6502f6c7c57999a37ea0df1"
+		},
+		{
+			"Name": "fa94b02a-7f1a-4fe9-af2a-796ae254c2d4",
+			"Type": 7,
+			"Hash": "fb6ca4e2d6165e3ea34d638f3929573ea7bebd1d4ded332468d6cbab46e4359f"
+		},
+		{
+			"Name": "071fe367-49b9-4d27-8044-61d4a6591df6",
+			"Type": 7,
+			"Hash": "51cf55caec47ceae4fd17d73348066853d433619634abc7143bcfc6ecfa91d68"
+		}
+	],
+	"Dependencies": null,
+	"ConfigMacros": [
+		{
+			"MacroName": "",
+			"Description": "Basic configuration macro for ICMP pinger values",
+			"DefaultValue": "pinger-icmp",
+			"Value": "",
+			"Type": "STRING",
+			"InstalledByID": ""
+		}
+	]
+}

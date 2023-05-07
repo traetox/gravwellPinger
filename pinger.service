@@ -7,7 +7,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/opt/pinger/pinger -clear-conns=gravwellserver -tag-name=uptime -timeout=0 -ping-timeout 5000ms host.to.monitor.com
+ExecStart=/opt/pinger/pinger -config-file /opt/pinger/pinger.conf -config-overlays /opt/pinger/pinger.conf.d
 WorkingDirectory=/opt/pinger
 Restart=always
 User=nobody

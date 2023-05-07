@@ -1,0 +1,146 @@
+{
+	"UUID": "df11e387-db4c-4346-9b9f-5adeef6ee72d",
+	"Name": "Latency Dashboard",
+	"Description": "Network Latency Information",
+	"Data": {
+		"timeframe": {
+			"durationString": null,
+			"timeframe": "P1DT",
+			"timezone": null,
+			"start": null,
+			"end": null
+		},
+		"searches": [
+			{
+				"alias": "Search 1",
+				"query": "tag=$PINGER_ICMP ax ip rtt \n| stats mean(rtt) by ip\n| chart mean by ip",
+				"color": null
+			},
+			{
+				"alias": "Search 2",
+				"query": "tag=$PINGER_ICMP ax ip rtt \n| stats mean(rtt) by ip\n| chart mean by ip",
+				"color": null
+			},
+			{
+				"alias": "Search 3",
+				"query": "tag=$PINGER_ICMP ax rtt == \"TIMEOUT\" hostname\n| stats count by hostname\n| chart count by hostname",
+				"color": null
+			},
+			{
+				"alias": "Search 4",
+				"query": "tag=$PINGER_ICMP ax ip rtt \n| stats max(rtt) min(rtt) by ip over 1m\n| eval (jitter=(float(max)-float(min)))\n| stats max(jitter) as jitter by ip\n| chart jitter by ip",
+				"color": null
+			},
+			{
+				"alias": "Latency",
+				"query": "tag=$PINGER_ICMP ax ip rtt \n| stats mean(rtt) by ip over 1m\n| numbercard mean",
+				"color": null
+			},
+			{
+				"alias": "IP Map",
+				"query": "tag=$PINGER_ICMP ax ip\n| unique  ip\n| geoip ip.Location \n| pointmap ip",
+				"color": null
+			}
+		],
+		"tiles": [
+			{
+				"id": 16766417668110,
+				"title": "Overview",
+				"renderer": "overview",
+				"hideZoom": true,
+				"span": {
+					"col": 6,
+					"row": 4,
+					"x": 0,
+					"y": 0
+				},
+				"searchesIndex": 0,
+				"rendererOptions": {}
+			},
+			{
+				"id": 16766417986981,
+				"title": "Mean Latency",
+				"renderer": "areaChart",
+				"hideZoom": true,
+				"span": {
+					"col": 6,
+					"row": 6,
+					"x": 0,
+					"y": 4
+				},
+				"searchesIndex": 1,
+				"rendererOptions": {}
+			},
+			{
+				"id": 16766418291532,
+				"title": "Timeout Activity",
+				"renderer": "barChart",
+				"hideZoom": true,
+				"span": {
+					"col": 6,
+					"row": 3,
+					"x": 6,
+					"y": 4
+				},
+				"searchesIndex": 2,
+				"rendererOptions": {
+					"Stack": "stacked",
+					"Orientation": "v",
+					"XAxisSplitLine": "no",
+					"YAxisSplitLine": "no",
+					"IncludeOther": "yes",
+					"LogScale": "no"
+				}
+			},
+			{
+				"id": 16766419898273,
+				"title": "Jitter",
+				"renderer": "streamChart",
+				"hideZoom": true,
+				"span": {
+					"col": 6,
+					"row": 5,
+					"x": 0,
+					"y": 10
+				},
+				"searchesIndex": 3,
+				"rendererOptions": {
+					"XAxisSplitLine": "no",
+					"IncludeOther": "yes"
+				}
+			},
+			{
+				"id": 1676642152483,
+				"title": "Latency",
+				"renderer": "numberCard",
+				"hideZoom": true,
+				"span": {
+					"col": 6,
+					"row": 4,
+					"x": 6,
+					"y": 0
+				},
+				"searchesIndex": 4,
+				"rendererOptions": {}
+			},
+			{
+				"id": 1676642271977,
+				"title": "IP Map",
+				"renderer": "pointmap",
+				"hideZoom": true,
+				"span": {
+					"col": 6,
+					"row": 8,
+					"x": 6,
+					"y": 7
+				},
+				"searchesIndex": 5,
+				"rendererOptions": {}
+			}
+		],
+		"linkZooming": false,
+		"grid": {},
+		"version": 2
+	},
+	"Labels": null
+}
