@@ -42,6 +42,4 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
 
-replace github.com/gravwell/gravwell/v3 => /home/kris/githubwork/gravwell
-
 replace github.com/buger/jsonparser => github.com/floren/jsonparser v0.0.0-20210727191945-e5063027fceb
