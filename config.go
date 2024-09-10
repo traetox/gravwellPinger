@@ -10,6 +10,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
 	"github.com/gravwell/gravwell/v3/ingest"
+	"github.com/gravwell/gravwell/v3/ingest/attach"
 	"github.com/gravwell/gravwell/v3/ingest/config"
 )
 
@@ -21,6 +22,7 @@ const (
 
 type cfgType struct {
 	Global config.IngestConfig
+	Attach attach.AttachConfig
 	HTTP   httpCfg
 	ICMP   baseCfg
 }
@@ -51,11 +53,7 @@ func GetConfig(path, overlayPath string) (*cfgType, error) {
 		return nil, err
 	}
 
-	if err := cr.Global.Verify(); err != nil {
-		return nil, err
-	} else if err = cr.HTTP.validate(); err != nil {
-		return nil, err
-	} else if err = cr.ICMP.validate(); err != nil {
+	if err := cr.Verify(); err != nil {
 		return nil, err
 	}
 
@@ -69,7 +67,22 @@ func GetConfig(path, overlayPath string) (*cfgType, error) {
 			return nil, errors.New("Failed to set a new ingester UUID")
 		}
 	}
+
 	return &cr, nil
+}
+
+func (cr *cfgType) Verify() error {
+	if err := cr.Global.Verify(); err != nil {
+		return err
+	} else if err = cr.HTTP.validate(); err != nil {
+		return err
+	} else if err = cr.ICMP.validate(); err != nil {
+		return err
+	} else if err = cr.Attach.Verify(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c icmpCfg) validate() (err error) {
@@ -168,4 +181,8 @@ func (c *cfgType) Tags() (tags []string, err error) {
 
 func (c *cfgType) IngestBaseConfig() config.IngestConfig {
 	return c.Global
+}
+
+func (c *cfgType) AttachConfig() attach.AttachConfig {
+	return c.Attach
 }
